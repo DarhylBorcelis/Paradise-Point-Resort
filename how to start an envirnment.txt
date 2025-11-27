@@ -1,0 +1,5 @@
+-new terminal
+-go to commandpront
+-enter " python -m venv env "
+-next " env\Scripts\activate.bat "
+done

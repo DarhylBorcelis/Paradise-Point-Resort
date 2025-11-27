@@ -1,0 +1,186 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="UTF-8">
+  <title> Resort </title>
+  <link rel="stylesheet" href="{% static 'resort/css/style.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+</head>
+
+<body>
+  <!-- Header Section -->
+  <header>
+    <div class="logo">
+      Paradise Point Resort
+    </div>
+
+    <nav>
+      <a href="#home">Home</a>
+      <a href="#services">Services</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#contact">Contact</a>
+    </nav>
+
+    {% if user.is_authenticated %}
+      <div class="settings-btn">
+        <a href="/setting" title="Settings">
+          <button title="Settings">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+          </button>
+         </a>
+      </div>
+    {% endif %}
+  </header>
+
+
+
+  <!-- Hero section -->
+  <section class="home" id="home">
+    <div class="hero-content">
+      <h1>Experience Your Own Slice<br><span>of Paradise</span></h1>
+      <h3>Best Place to Relax</h3>
+      <div class="hero-buttons">
+        {% if user.is_authenticated %}
+          <!-- User is logged in -->
+          <a href="/booking" class="btn primary">Book Now</a>
+        {% else %}
+          <!-- User not logged in -->
+          <a href="/visitors" class="btn primary">Visit Now</a>
+          <a href="/login" class="btn secondary">Sign In</a>
+        {% endif %}
+      </div>
+      <p class="note">Exclusive reservation. Limited slots.</p>
+    </div>
+  </section>
+
+
+  <hr>
+
+  <!-- Services Section -->
+  <section class="services" id="services">
+    <h2 class="section-title">Services</h2>
+    <div class="service-container">
+      {% for service in services %}
+        <div class="service-card">
+          <i class="fa-solid fa-microphone"></i>
+          <h3>{{ service.service_name }}</h3>
+          <p>{{ service.service_description }}</p>
+          <span>{{ service.service_price }}</span>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- Gallery Section -->
+  <section class="gallery" id="gallery">
+    <h2 class="gallery-title">Experience Paradise</h2>
+    <p class="gallery-subtitle">Take a glimpse at the resort and imagine your next stay with us.</p>
+
+    <div class="gallery-item">
+      <div class="gallery-text">
+        <h3>Poolside Paradise</h3>
+        <p>After a refreshing swim in the pool, unwind at our resting area — the perfect spot to relax, dry off,
+          and enjoy the ocean breeze in peace.</p>
+      </div>
+      <div class="gallery-image">
+        <img src="{% static 'resort/img/gallery/resort.jpg' %}" alt="Poolside Paradise">
+      </div>
+    </div>
+
+    <div class="gallery-item reverse">
+      <div class="gallery-image">
+        <img src="{% static 'resort/img/gallery/resort2.jpg' %}" alt="Resting Area by the Beach">
+      </div>
+      <div class="gallery-text">
+        <h3>Resting Area by the Beach</h3>
+        <p>After a refreshing swim in the pool, unwind at our resting area — the perfect spot to relax, dry off,
+          and enjoy the ocean breeze in peace.</p>
+      </div>
+    </div>
+
+    <div class="gallery-item">
+      <div class="gallery-text">
+        <h3>Second Swimming Pool</h3>
+        <p>Enjoy a refreshing dip in our second swimming pool — perfect for families, groups, or simply relaxing
+          in a more private setting.</p>
+      </div>
+      <div class="gallery-image">
+        <img src="{% static 'resort/img/gallery/resort3.jpg' %}" alt="Second Swimming Pool">
+      </div>
+    </div>
+
+    <p class="gallery-footer">Love what you see? Sign up now.</p>
+  </section>
+
+  <hr>
+
+  <!-- Contact Section -->
+  <section class="contact" id="contact">
+    <div class="contact-container">
+      <div class="contact-left">
+        <h2>Contact Us</h2>
+
+        <div class="social">
+          <h4>CONNECT WITH US</h4>
+          <div class="icons">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-right">
+        <p><strong>Mail Address</strong><br>123 Anywhere St., Antipolo City, ST 12345</p>
+        <p><strong>Phone Number</strong><br>123-456-7890</p>
+        <p><strong>E-mail</strong><br>baketayawgumana@gmail.com</p>
+
+        <a href="#" class="signup-btn">
+          Sign up today! <span>&rarr;</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+
+  <button id="backToTop" title="Go to top">↑</button>
+
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+  <script>
+    const topButton = document.getElementById("backToTop");
+
+    window.onscroll = function () {
+      if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+        topButton.style.display = "block";
+      } else {
+        topButton.style.display = "none";
+      }
+    };
+
+    topButton.onclick = function () {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    };
+  </script>
+
+
+
+
+</body>
+
+
+
+</html>

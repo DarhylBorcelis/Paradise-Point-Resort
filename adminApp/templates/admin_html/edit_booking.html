@@ -1,0 +1,177 @@
+<!-- Include Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<!-- Include Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* Form Card */
+form {
+    max-width: 650px;
+    margin: 40px auto;
+    padding: 30px 35px;
+    background-color: #f8fafc; /* Light background */
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    font-family: 'Inter', sans-serif;
+}
+
+/* Form Header */
+form h3 {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 600;
+    color: #1e40af; /* Indigo-800 */
+    margin-bottom: 25px;
+}
+
+/* Input Wrapper */
+.input-group {
+    position: relative;
+    margin-bottom: 18px;
+}
+
+.input-group i {
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    transform: translateY(-50%);
+    color: #9ca3af; /* Gray-400 */
+}
+
+.input-group input,
+.input-group select,
+.input-group textarea {
+    width: 100%;
+    padding: 12px 15px 12px 38px; /* leave space for icon */
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.input-group input:focus,
+.input-group select:focus,
+.input-group textarea:focus {
+    outline: none;
+    border-color: #3b82f6; /* Blue */
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+/* Checkbox group */
+.checkbox-group {
+    margin-bottom: 20px;
+}
+
+.checkbox-group label {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 15px;
+    font-weight: 500;
+    color: #1f2937;
+    cursor: pointer;
+}
+
+.checkbox-group input[type="checkbox"] {
+    margin-right: 6px;
+}
+
+/* Submit Button */
+button[type="submit"] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 14px;
+    background-color: #3b82f6;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+button[type="submit"]:hover {
+    background-color: #2563eb;
+}
+
+/* Labels */
+label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: #1f2937;
+}
+
+/* Optional: add small icon before section titles */
+.section-title {
+    font-weight: 600;
+    margin: 15px 0 8px;
+    font-size: 15px;
+    color: #1e3a8a;
+}
+</style>
+
+<form method="POST">
+    {% csrf_token %}
+    <h3><i class="fas fa-edit"></i> Edit Booking</h3>
+
+    <div class="input-group">
+        <i class="fas fa-user"></i>
+        <input type="text" name="fullname" value="{{ booking.fullname }}" placeholder="Full Name" required>
+    </div>
+
+    <div class="input-group">
+        <i class="fas fa-phone"></i>
+        <input type="text" name="contact" value="{{ booking.contact }}" placeholder="Contact Number" required>
+    </div>
+
+    <div class="input-group">
+        <i class="fas fa-envelope"></i>
+        <input type="email" name="email" value="{{ booking.email }}" placeholder="Email" required>
+    </div>
+
+    <div class="input-group">
+        <i class="fas fa-calendar-check"></i>
+        <input type="date" name="checkIn_date" value="{{ booking.checkIn_date }}" required>
+    </div>
+
+    <div class="input-group">
+        <i class="fas fa-calendar-times"></i>
+        <input type="date" name="checkOut_date" value="{{ booking.checkOut_date }}" required>
+    </div>
+
+    <div class="input-group">
+        <i class="fas fa-money-bill-wave"></i>
+        <input type="number" name="total_price" value="{{ booking.total_price }}" step="0.01" placeholder="Total Price" required>
+    </div>
+
+    <div class="input-group">
+        <i class="fas fa-credit-card"></i>
+        <input type="text" name="payment_method" value="{{ booking.payment_method }}" placeholder="Payment Method" required>
+    </div>
+
+    <div class="input-group">
+        <i class="fas fa-info-circle"></i>
+        <select name="status" required>
+            <option value="Pending" {% if booking.status == 'Pending' %}selected{% endif %}>Pending</option>
+            <option value="Completed" {% if booking.status == 'Completed' %}selected{% endif %}>Completed</option>
+            <option value="Cancelled" {% if booking.status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+        </select>
+    </div>
+
+    <div class="checkbox-group">
+        <span class="section-title"><i class="fas fa-concierge-bell"></i> Services</span><br>
+        {% for service in services %}
+            <label>
+                <input type="checkbox" name="services" value="{{ service.id }}"
+                    {% if service in booking.services.all %}checked{% endif %}>
+                {{ service.service_name }}
+            </label>
+        {% endfor %}
+    </div>
+
+    <button type="submit"><i class="fas fa-save"></i> Update Booking</button>
+</form>

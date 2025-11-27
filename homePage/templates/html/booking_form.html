@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Resort Booking</title>
+
+  <style>
+    :root{
+      --bg:#f5f7fb;
+      --card:#ffffff;
+      --accent:#1e90ff;
+      --muted:#6b7280;
+      --success:#16a34a;
+      --danger:#ef4444;
+      --radius:12px;
+      --shadow: 0 6px 20px rgba(16,24,40,0.08);
+      --maxw:720px;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+    }
+
+    body{
+      margin:0;
+      background: linear-gradient(180deg, #eef3fb 0%, var(--bg) 100%);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:28px;
+      color:#0f172a;
+    }
+
+    .card{
+      width:100%;
+      max-width:var(--maxw);
+      background:var(--card);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:28px;
+    }
+
+    .header{
+      margin-bottom:18px;
+    }
+
+    .header h1{
+      margin:0;
+      font-size:20px;
+    }
+
+    form{
+      display:grid;
+      grid-template-columns:repeat(2, 1fr);
+      gap:14px;
+    }
+
+    .full{grid-column:1 / -1;}
+
+    label{
+      display:block;
+      font-size:13px;
+      margin-bottom:6px;
+      font-weight:600;
+    }
+
+    input, select, textarea{
+      width:100%;
+      padding:10px 12px;
+      border-radius:8px;
+      border:1px solid #e6e9ef;
+      font-size:14px;
+      background:#fcfdff;
+      outline:none;
+    }
+
+    input:focus, select:focus, textarea:focus{
+      border-color:var(--accent);
+      box-shadow:0 6px 18px rgba(30,144,255,0.08);
+    }
+
+    textarea{min-height:100px; resize:vertical;}
+
+    .actions{
+      grid-column:1 / -1;
+      display:flex;
+      justify-content:flex-end;
+      gap:12px;
+      margin-top:6px;
+    }
+
+    button.btn{
+      background:var(--accent);
+      color:white;
+      border:0;
+      padding:10px 18px;
+      border-radius:10px;
+      font-weight:600;
+      cursor:pointer;
+      box-shadow: 0 6px 18px rgba(30,144,255,0.12);
+    }
+
+    button.secondary{
+      background:transparent;
+      color:var(--muted);
+      border:1px solid #e6e9ef;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .service-card {
+      display: flex;
+      flex-direction: column;
+      border: 1px solid #e6e9ef;
+      border-radius: 8px;
+      padding: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: #fcfdff;
+    }
+
+    .service-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 6px 12px rgba(30,144,255,0.08);
+    }
+
+    .service-card input[type="checkbox"] {
+      margin-bottom: 8px;
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    .service-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+    }
+
+    .service-name {
+      font-weight: 500;
+    }
+
+    .service-price {
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    @media (max-width:700px){
+      form{grid-template-columns:1fr;}
+      .actions{flex-direction:column-reverse;}
+      button.btn,button.secondary{width:100%;}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+
+    <div class="header">
+      <h1>Book the Entire Resort</h1>
+      <div class="muted">Complete the form to submit your booking.</div>
+    </div>
+
+    <form method="POST">
+      {% csrf_token %}
+
+      <div class="full">
+        <label>Full Name</label>
+        <input type="text" name="fullname" required>
+      </div>
+
+      <div>
+        <label>Contact Number</label>
+        <input type="text" name="contact" required>
+      </div>
+
+      <div>
+        <label>Email Address</label>
+        <input type="email" name="email" required>
+      </div>
+
+      <div>
+        <label>Check-In Date</label>
+        <input type="date" id="checkIn_date" name="checkIn_date" required>
+      </div>
+
+      <div>
+        <label>Check-Out Date</label>
+        <input type="date" id="checkOut_date" name="checkOut_date" required>
+      </div>
+
+      <div>
+        <label>Guests</label>
+        <input type="number" name="number_of_guests" min="1" required>
+      </div>
+
+      <div class="full">
+        <label>Services (optional)</label>
+        <div class="services-grid">
+          {% for s in services %}
+            <label class="service-card">
+              <input type="checkbox" name="services" value="{{ s.id }}" data-price="{{ s.service_price }}">
+              <div class="service-info">
+                <span class="service-name">{{ s.service_name }}</span>
+                <span class="service-price">₱{{ s.service_price }}</span>
+              </div>
+            </label>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div>
+        <label>Payment Method</label>
+        <select name="payment_method" required>
+          <option value="CASH">Cash</option>
+          <option value="GCASH">GCash</option>
+          <option value="BANK">Bank Transfer</option>
+        </select>
+      </div>
+
+      <div>
+        <label>Total Price (₱)</label>
+        <input type="number" name="total_price" id="total_price" readonly value="0">
+      </div>
+
+      <div class="actions">
+        <button type="button" class="secondary" onclick="window.history.back()">Cancel</button>
+        <button type="submit" class="btn">Submit Booking</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    const serviceCheckboxes = document.querySelectorAll('input[name="services"]');
+    const totalPriceInput = document.getElementById('total_price');
+
+    function calculateTotal() {
+      let total = 0;
+      
+      // Sum prices of checked services
+      serviceCheckboxes.forEach(cb => {
+        if (cb.checked) {
+          total += parseFloat(cb.dataset.price);
+        }
+      });
+
+      // Optional: add base resort fee
+      const baseFee = 5000;
+      total += baseFee;
+
+      // Update total price input
+      totalPriceInput.value = total.toFixed(2);
+    }
+
+    // Add event listener to each checkbox
+    serviceCheckboxes.forEach(cb => cb.addEventListener('change', calculateTotal));
+
+    // Calculate initial total on page load
+    calculateTotal();
+  </script>
+
+
+  <script>
+    const today = new Date().toISOString().split('T')[0];
+
+    const checkInInput = document.getElementById('checkIn_date');
+    const checkOutInput = document.getElementById('checkOut_date');
+
+    // Disable past dates
+    checkInInput.setAttribute('min', today);
+    checkOutInput.setAttribute('min', today);
+
+    // Booked dates from Django
+    const bookedDates = {{ booked_dates|safe }}; // example: ["2025-11-28","2025-11-29"]
+
+    function preventBookedDates(input) {
+      input.addEventListener('input', () => {
+        const selectedDate = input.value;
+        if (bookedDates.includes(selectedDate)) {
+          alert("This date is already booked. Please select another date.");
+          input.value = "";
+        }
+
+        // If check-in changes, update min for check-out
+        if (input === checkInInput && checkInInput.value) {
+          checkOutInput.setAttribute('min', checkInInput.value);
+          // Clear check-out if it's before new check-in
+          if (checkOutInput.value && checkOutInput.value < checkInInput.value) {
+            checkOutInput.value = "";
+          }
+        }
+      });
+    }
+
+    preventBookedDates(checkInInput);
+    preventBookedDates(checkOutInput);
+  </script>
+
+
+
+</body>
+
+</html>

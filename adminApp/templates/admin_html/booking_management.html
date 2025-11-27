@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resort</title>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .customTable {
+            width: 100%;
+            background-color: #EAEAEA;
+            border-collapse: collapse;
+            border-width: 3px;
+            border-color: #9C9C9C;
+            border-style: groove;
+            color: #000000;
+        }
+
+        .customTable th,
+        .customTable td {
+            text-align: center;
+            border-width: 3px;
+            border-color: #9C9C9C;
+            border-style: groove;
+            padding: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .customTable thead {
+            background-color: rgb(212, 251, 255);
+        }
+
+        .div_container {
+            padding: 25px;
+            margin-left: 75px;
+        }
+
+        .container {
+            background-color: rgb(255, 255, 255);
+            padding: 20px;
+            border: 5px double #1c1212;
+            overflow-x: auto;
+            max-width: 100%;
+        }
+
+        .table-action-buttons a {
+            margin-right: 5px;
+            padding: 6px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            text-decoration: none;
+            color: white;
+            transition: background-color 0.2s ease;
+        }
+
+        .table-action-buttons a.btn-warning {
+            background-color: #f0ad4e;
+            border: none;
+        }
+
+        .table-action-buttons a.btn-warning:hover {
+            background-color: #ec971f;
+        }
+
+        .table-action-buttons a.delete-btn {
+            background-color: #d9534f;
+        }
+
+        .table-action-buttons a.delete-btn:hover {
+            background-color: #c9302c;
+        }
+
+        .table-action-buttons a.cancel-btn {
+            background-color: #ff6f61;
+            border: none;
+        }
+
+        .table-action-buttons a.cancel-btn:hover {
+            background-color: #e55b4e;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 25px;
+            background: linear-gradient(90deg, #e0f2fe, #f8fafc);
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .left-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1f2937;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .left-title i {
+            color: #2563eb;
+            font-size: 20px;
+        }
+
+        .search-box {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-box input[type="text"] {
+            padding: 10px 40px 10px 15px;
+            width: 250px;
+            border: 1px solid #ccc;
+            border-radius: 30px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .search-box input[type="text"]:focus {
+            border-color: #60a5fa;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+        }
+
+        .search-box i {
+            position: absolute;
+            right: 15px;
+            color: #888;
+            font-size: 18px;
+            pointer-events: none;
+        }
+
+        .filter-box select {
+            margin-left: 15px;
+            padding: 8px 12px;
+            border-radius: 30px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn .material-symbols-rounded {
+            font-size: 20px;
+            vertical-align: middle;
+        }
+
+        /*status*/
+        .status {
+            font-weight: bold;
+        }
+
+        .status.pending {
+            color: rgb(101, 79, 39);
+        }
+
+        .status.checked-in {
+            color: green;
+        }
+
+        .status.completed {
+            color: darkgreen;
+        }
+
+        .status.cancelled {
+            color: red;
+        }
+
+        .status.no-show {
+            color: darkred;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 230px;
+            height: 100%;
+            background: #1e293b;
+            /* Slate-800 */
+            color: #fff;
+            padding-top: 20px;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .sidebar-header i {
+            font-size: 50px;
+            color: #60a5fa;
+        }
+
+        .sidebar-header h3 {
+            margin-top: 10px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 14px 20px;
+            font-size: 15px;
+            color: #e2e8f0;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+        .sidebar a i {
+            margin-right: 10px;
+        }
+
+        .sidebar a:hover {
+            background: #334155;
+            /* Slate-700 */
+            color: #fff;
+        }
+
+        /* Move dashboard content to the right */
+        .div_container {
+            margin-left: 250px !important;
+        }
+
+        /* Dropdown styling */
+        .dropdown-container {
+            display: none;
+            background-color: #2c3e50;
+            padding-left: 20px;
+        }
+
+        .dropdown-container a {
+            padding: 10px 20px;
+            font-size: 14px;
+        }
+
+        .dropdown-btn.active+.dropdown-container {
+            display: block;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 230px;
+            height: 100%;
+            background: #1e293b;
+            /* Slate-800 */
+            color: #fff;
+            padding-top: 20px;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .sidebar-header i {
+            font-size: 50px;
+            color: #60a5fa;
+        }
+
+        .sidebar-header h3 {
+            margin-top: 10px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 14px 20px;
+            font-size: 15px;
+            color: #e2e8f0;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+        .sidebar a i {
+            margin-right: 10px;
+        }
+
+        .sidebar a:hover {
+            background: #334155;
+            /* Slate-700 */
+            color: #fff;
+        }
+
+        /* Move dashboard content to the right */
+        .div_container {
+            margin-left: 250px !important;
+        }
+
+        /* Dropdown styling */
+        .dropdown-container {
+            display: none;
+            background-color: #2c3e50;
+            padding-left: 20px;
+        }
+
+        .dropdown-container a {
+            padding: 10px 20px;
+            font-size: 14px;
+        }
+
+        .dropdown-btn.active+.dropdown-container {
+            display: block;
+        }
+
+        /*End*/
+    </style>
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <i class="fas fa-user-circle"></i>
+            <h3>{{ request.user.username }}</h3>
+        </div>
+
+        <!-- Sidebar Menu -->
+        <a href="/dashboard"><i class="fas fa-home"></i> Dashboard</a>
+
+        <!-- Reservation Dropdown -->
+        <a href="#" class="dropdown-btn">
+            <i class="fas fa-calendar-check"></i> Reservations
+            <i class="fas fa-caret-down" style="float:right;"></i>
+        </a>
+        <div class="dropdown-container">
+            <a href="booking_management">Booking Management</a>
+            <a href="visit_reservation">Visit Reservation</a>
+        </div>
+
+        <a href="services"><i class="fas fa-concierge-bell"></i> Services</a>
+        <a href="canceled"><i class="fas fa-ban"></i> Cancel</a>
+        <a href="revenue"><i class="fas fa-chart-bar"></i> Revenue</a>
+    </div>
+
+    <div class="div_container">
+
+        <div class="top-bar">
+            <div class="left-title">
+                <i class="fa fa-calendar-check"></i> Booking Records
+            </div>
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <div class="search-box">
+                    <input type="text" placeholder="Search bookings..." id="findBookingInput">
+                    <i class="fa fa-search"></i>
+                </div>
+                <div class="filter-box">
+                    <select>
+                        <option value="">All Categories</option>
+                        <option value="completed">Completed</option>
+                        <option value="pending">Pending</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <table class="customTable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Contact Number</th>
+                        <th>Check_in</th>
+                        <th>Check_out</th>
+                        <th>Services</th>
+                        <th>Price</th>
+                        <th>Booking Status</th>
+                        <th>Payment Methiod</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in bookings %}
+                    <tr>
+                        <td>{{ booking.fullname }}</td>
+                        <td>{{ booking.contact }}</td>
+                        <td>{{ booking.checkIn_date }}</td>
+                        <td>{{ booking.checkOut_date }}</td>
+                        <td>
+                            {% for service in booking.services.all %}
+                            {{ service.service_name }}{% if not forloop.last %}, {% endif %}
+                            {% empty %}
+                            None
+                            {% endfor %}
+                        </td>
+                        <td>{{ booking.total_price }}</td>
+                        <td>{{ booking.status }}</td>
+                        <td>{{ booking.payment_method }}</td>
+                        <td>
+                            <a href="{% url 'edit_booking' booking.id %}" class="btn edit">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <a href="{% url 'delete_booking' booking.id %}" class="btn delete"
+                                onclick="return confirm('Are you sure?');">
+                                <i class="fas fa-trash"></i> Delete
+                            </a>
+                        </td>
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Search functionality
+        document.getElementById('findbookingInput').addEventListener('keyup', function () {
+            const filter = this.value.toLowerCase();
+            const rows = document.querySelectorAll('.customTable tbody tr');
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(filter) ? '' : 'none';
+            });
+        });
+
+        // Status filter functionality
+        document.querySelector('select').addEventListener('change', function () {
+            const status = this.value.toLowerCase();
+            const rows = document.querySelectorAll('.customTable tbody tr');
+            rows.forEach(row => {
+                const rowStatus = row.querySelector('.status').classList.contains(status) || status === '';
+                row.style.display = rowStatus ? '' : 'none';
+            });
+        });
+    </script>
+
+    <script>
+        const dropdowns = document.getElementsByClassName("dropdown-btn");
+        for (let i = 0; i < dropdowns.length; i++) {
+            dropdowns[i].addEventListener("click", function () {
+                this.classList.toggle("active");
+                let dropdownContent = this.nextElementSibling;
+                dropdownContent.style.display =
+                    dropdownContent.style.display === "block" ? "none" : "block";
+            });
+        }
+    </script>
+
+
+</body>
+
+</html>

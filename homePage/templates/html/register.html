@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --accent: #1e90ff;
+      --muted: #6b7280;
+      --radius: 12px;
+      --shadow: 0 6px 20px rgba(16,24,40,0.08);
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: linear-gradient(180deg, #eef3fb 0%, var(--bg) 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: #0f172a;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 30px 25px;
+      box-shadow: var(--shadow);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    h1 {
+      margin: 0 0 15px 0;
+      font-size: 24px;
+      text-align: center;
+    }
+
+    .muted {
+      font-size: 13px;
+      color: var(--muted);
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .messages h5 {
+      font-size: 13px;
+      margin: 0 0 8px 0;
+      color: red;
+      text-align: center;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    label {
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid #e6e9ef;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      background: #fcfdff;
+    }
+
+    input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 6px 18px rgba(30,144,255,0.08);
+    }
+
+    button {
+      padding: 10px;
+      background: var(--accent);
+      color: white;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background: #0077e6;
+    }
+
+    @media (max-width: 480px) {
+      .card {
+        padding: 25px 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h1>Sign Up</h1>
+    <div class="muted">Create your account</div>
+
+    <div class="messages">
+      {% for message in messages %}
+        <h5>{{ message }}</h5>
+      {% endfor %}
+    </div>
+
+    <form action="register" method="POST">
+      {% csrf_token %}
+
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" required>
+
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" required>
+
+      <label for="pass">Password</label>
+      <input type="password" id="pass" name="pass" required>
+
+      <label for="repeat_pass">Repeat Password</label>
+      <input type="password" id="repeat_pass" name="repeat_pass" required>
+
+      <button type="submit">Register</button>
+      <p class="muted" style="text-align:center; margin-top: 10px;">
+        Already have an account? <a href="/login" style="color: var(--accent); text-decoration: none;">Sign In</a>
+        </p>
+    </form>
+  </div>
+
+</body>
+</html>

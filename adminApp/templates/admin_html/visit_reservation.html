@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Visit Reservations</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #fafafa;
+      margin: 0;
+      padding: 0;
+    }
+
+    .div_container {
+      padding: 25px;
+      margin-left: 75px;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 25px;
+      background: #4b9cd3;
+      color: white;
+      border-radius: 10px;
+      margin-bottom: 25px;
+    }
+
+    .left-title {
+      font-size: 22px;  /* Increased font size */
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .search-category-box {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .search-box input {
+      padding: 10px 15px;
+      border-radius: 25px;
+      border: 1px solid #ccc;
+      font-size: 16px;  /* Increased font size */
+      width: 220px;
+    }
+
+    .category-box select {
+      padding: 10px 15px;
+      border-radius: 25px;
+      border: 1px solid #ccc;
+      font-size: 16px;  /* Increased font size */
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));  /* Smaller cards */
+      gap: 20px;
+    }
+
+    .reservation-card {
+      background-color: #ffffff;
+      border-radius: 15px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      padding: 15px;  /* Reduced padding */
+      cursor: pointer;
+      transition: transform 0.3s ease-in-out;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 220px;  /* Reduced height */
+    }
+
+    .reservation-card:hover {
+      transform: translateY(-10px);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;  /* Reduced margin */
+      font-size: 18px;  /* Increased font size */
+    }
+
+    .card-header strong {
+      text-transform: uppercase;
+    }
+
+    .status-badge {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 14px;
+      color: white;
+    }
+
+    .Pending { background-color: #f3c200; }
+    .Completed { background-color: #32c797; }
+    .Cancelled { background-color: #e63946; }
+    .In-Progress { background-color: #3182ce; }
+
+    .card-body {
+      flex-grow: 1;
+      margin-bottom: 10px;  /* Reduced margin */
+      font-size: 17px;  /* Increased font size */
+      color: #4b5563;
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 15px;
+    }
+
+    .action-btn {
+      padding: 8px 16px;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 14px;
+      text-decoration: none;
+    }
+
+    .cancel-btn {
+      background-color: #e63946;
+      color: white;
+    }
+
+    .cancel-btn:hover {
+      background-color: #c62828;
+    }
+
+    .view-btn {
+      background-color: #3182ce;
+      color: white;
+    }
+
+    .view-btn:hover {
+      background-color: #2563eb;
+    }
+
+            /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 230px;
+            height: 100%;
+            background: #1e293b;
+            /* Slate-800 */
+            color: #fff;
+            padding-top: 20px;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .sidebar-header i {
+            font-size: 50px;
+            color: #60a5fa;
+        }
+
+        .sidebar-header h3 {
+            margin-top: 10px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 14px 20px;
+            font-size: 15px;
+            color: #e2e8f0;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+        .sidebar a i {
+            margin-right: 10px;
+        }
+
+        .sidebar a:hover {
+            background: #334155;
+            /* Slate-700 */
+            color: #fff;
+        }
+
+        /* Move dashboard content to the right */
+        .div_container {
+            margin-left: 250px !important;
+        }
+
+        /* Dropdown styling */
+        .dropdown-container {
+            display: none;
+            background-color: #2c3e50;
+            padding-left: 20px;
+        }
+
+        .dropdown-container a {
+            padding: 10px 20px;
+            font-size: 14px;
+        }
+
+        .dropdown-btn.active+.dropdown-container {
+            display: block;
+        }
+  </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <i class="fas fa-user-circle"></i>
+            <h3>{{ request.user.username }}</h3>
+        </div>
+
+        <!-- Sidebar Menu -->
+        <a href="/dashboard"><i class="fas fa-home"></i> Dashboard</a>
+
+        <!-- Reservation Dropdown -->
+        <a href="#" class="dropdown-btn">
+            <i class="fas fa-calendar-check"></i> Reservations
+            <i class="fas fa-caret-down" style="float:right;"></i>
+        </a>
+        <div class="dropdown-container">
+            <a href="booking_management">Booking Management</a>
+            <a href="visit_reservation">Visit Reservation</a>
+        </div>
+
+        <a href="services"><i class="fas fa-concierge-bell"></i> Services</a>
+        <a href="canceled"><i class="fas fa-ban"></i> Cancel</a>
+        <a href="revenue"><i class="fas fa-chart-bar"></i> Revenue</a>
+    </div>
+
+  <div class="div_container">
+
+    <div class="top-bar">
+      <div class="left-title">
+        <i class="fa fa-calendar-check"></i> Visit Reservations
+      </div>
+      <div class="search-category-box">
+        <div class="search-box">
+          <input type="text" id="searchInput" placeholder="Search...">
+        </div>
+        <div class="category-box">
+          <select id="statusFilter">
+            <option value="">All Status</option>
+            <option value="Completed">Completed</option>
+            <option value="Cancelled">Cancelled</option>
+            <option value="Pending">Pending</option>
+            <option value="In-Progress">In Progress</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid" id="reservationGrid">
+      {% for visitor in visitors %}
+        <div class="reservation-card" data-status="">
+          
+          <div class="card-header">
+            <div>
+              <strong>{{visitor.visitor_name}}</strong>
+            </div>
+            <div class="status-badge">
+              status
+            </div>
+          </div>
+          <div class="card-body">
+            <p><strong>Contact:</strong> {{visitor.visitor_contact}}</p>
+            <p><strong>Email:</strong> {{visitor.visitor_email}}</p>
+            <p><strong>Visit Date:</strong>{{visitor.visit_date}}</p>
+            <p><strong>Visit Time:</strong> {{visitor.visit_time}}</p>
+          </div>
+          
+        </div>
+        {% endfor %}
+    </div>
+
+  </div>
+
+  <script>
+    // Search functionality
+    document.getElementById('searchInput').addEventListener('keyup', function () {
+      const filter = this.value.toLowerCase();
+      document.querySelectorAll('.reservation-card').forEach(card => {
+        const text = card.textContent.toLowerCase();
+        card.style.display = text.includes(filter) ? 'block' : 'none';
+      });
+    });
+
+    // Status filter functionality
+    document.getElementById('statusFilter').addEventListener('change', function () {
+      const status = this.value.toLowerCase();
+      document.querySelectorAll('.reservation-card').forEach(card => {
+        const cardStatus = card.getAttribute('data-status').toLowerCase();
+        if (status === '' || cardStatus === status) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  </script>
+    <script>
+      const dropdowns = document.getElementsByClassName("dropdown-btn");
+      for (let i = 0; i < dropdowns.length; i++) {
+          dropdowns[i].addEventListener("click", function () {
+              this.classList.toggle("active");
+              let dropdownContent = this.nextElementSibling;
+              dropdownContent.style.display =
+                  dropdownContent.style.display === "block" ? "none" : "block";
+          });
+      }
+    </script>
+
+</body>
+</html>
